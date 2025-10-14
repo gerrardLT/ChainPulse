@@ -1,0 +1,18 @@
+{
+  "network": "monad-testnet",
+  "chainId": 10143,
+  "timestamp": "2025-10-13T03:31:02.834Z",
+  "deployer": "0x1dbC1A3cC4BE8543c1019894Cf5585f7d8B69837",
+  "factoryAddress": "0xa600bDf90bc02bff280e15ebf050812222ff1eF3",
+  "implementationAddress": "0x8d446CC8E67a41715a5a4Efb784A7Cad42BbA68b",
+  "sampleAccountAddress": "0xe10c124EfAf32c7Bc31F39721695c017711bbA2B",
+  "entryPoint": "0x0000000071727De22E5E9d8BAf0edAc6f37da032",
+  "transactionHash": "0x89c8a7f57842a7b80c6011d22f74ef11390dda27f8c10c1b29ad91bf0aa354aa",
+  "gasUsed": "500000",
+  "verified": true,
+  "explorer": "https://testnet.monadexplorer.com",
+  "factoryUrl": "https://testnet.monadexplorer.com/address/0xa600bDf90bc02bff280e15ebf050812222ff1eF3",
+  "implementationUrl": "https://testnet.monadexplorer.com/address/0x8d446CC8E67a41715a5a4Efb784A7Cad42BbA68b",
+  "sampleAccountUrl": "https://testnet.monadexplorer.com/address/0xe10c124EfAf32c7Bc31F39721695c017711bbA2B"
+}
+

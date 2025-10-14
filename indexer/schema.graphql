@@ -1,0 +1,107 @@
+# ChainPulse Envio GraphQL Schema
+# 定义索引的实体和字段
+
+"""
+智能账户实体
+"""
+type SmartAccount @entity {
+  id: ID!
+  accountAddress: String! @index
+  owner: String! @index
+  chainId: Int! @index
+  factory: String!
+  salt: BigInt!
+  isDeployed: Boolean!
+  deploymentTxHash: String
+  deploymentTimestamp: BigInt
+  currentOwner: String!
+  Monad
+  # 关联的交易
+  transactions: [Transaction!]! @derivedFrom(field: "smartAccount")
+  
+  # 关联的所有权变更
+  ownershipTransfers: [OwnershipTransfer!]! @derivedFrom(field: "smartAccount")
+  
+  # 创建时间
+  createdAt: BigInt!
+  updatedAt: BigInt!
+  
+  # 区块信息
+  createdAtBlock: BigInt!
+  updatedAtBlock: BigInt!
+}
+
+"""
+交易执行记录
+"""
+type Transaction @entity {
+  id: ID!
+  smartAccount: SmartAccount!
+  target: String! @index
+  value: BigInt!
+  data: String!
+  transactionHash: String! @index
+  blockNumber: BigInt! @index
+  timestamp: BigInt!
+  gasUsed: BigInt
+  success: Boolean!
+  
+  # 链 ID
+  chainId: Int! @index
+}
+
+"""
+所有权转移记录
+"""
+type OwnershipTransfer @entity {
+  id: ID!
+  smartAccount: SmartAccount!
+  previousOwner: String! @index
+  newOwner: String! @index
+  transactionHash: String! @index
+  blockNumber: BigInt! @index
+  timestamp: BigInt!
+  
+  # 链 ID
+  chainId: Int! @index
+}
+
+"""
+账户创建统计
+每日统计
+"""
+type DailyAccountStats @entity {
+  id: ID! # 格式: chainId-date (e.g., "1-2025-10-11")
+  chainId: Int!
+  date: String! @index
+  accountsCreated: Int!
+  totalAccounts: Int!
+}
+
+"""
+交易统计
+每日统计
+"""
+type DailyTransactionStats @entity {
+  id: ID! # 格式: chainId-date
+  chainId: Int!
+  date: String! @index
+  transactionCount: Int!
+  totalValue: BigInt!
+  totalGasUsed: BigInt!
+  successfulTransactions: Int!
+  failedTransactions: Int!
+}
+
+"""
+全局统计
+"""
+type GlobalStats @entity {
+  id: ID! # 格式: "global-{chainId}"
+  chainId: Int!
+  totalAccounts: Int!
+  totalTransactions: Int!
+  totalValue: BigInt!
+  lastUpdated: BigInt!
+}
+

@@ -1,0 +1,86 @@
+# Envio 索引器配置
+# ChainPulse - 实时链上事件监听与索引
+
+name: chainpulse-indexer
+description: ChainPulse 智能账户事件索引器
+
+# 数据库配置
+database:
+  type: postgres
+  # 注意：生产环境使用环境变量配置
+  # connection_string: ${DATABASE_URL}
+
+# 网络配置
+networks:
+  # Monad 测试网（主要网络）
+  - id: 10143
+    name: monad-testnet
+    rpc_config:
+      url: https://testnet-rpc.monad.xyz
+    start_block: LATEST # 从最新区块开始索引
+    contracts:
+      # SimpleAccountFactory 合约
+      - name: SimpleAccountFactory
+        address: "0xa600bDf90bc02bff280e15ebf050812222ff1eF3"
+        abi_file_path: ./abis/SimpleAccountFactory.json
+        handler: ./src/EventHandlers.ts
+        events:
+          - event: AccountCreated
+            required_entities:
+              - name: SmartAccount
+
+      # SimpleAccount 合约（动态监听所有创建的账户）
+      - name: SimpleAccount
+        # 不指定 address，监听所有 SimpleAccount 实例
+        abi_file_path: ./abis/SimpleAccount.json
+        handler: ./src/EventHandlers.ts
+        events:
+          - event: SimpleAccountInitialized
+            required_entities:
+              - name: SmartAccount
+          # Note: 官方 SimpleAccount 没有 AccountExecuted 事件
+          # 如需监听交易执行，需要监听 EntryPoint 的 UserOperationEvent
+
+  # Sepolia 测试网（可选）
+  - id: 11155111
+    name: sepolia
+    rpc_config:
+      url: ${SEPOLIA_RPC_URL:-https://sepolia.infura.io/v3/}
+    start_block: LATEST
+    contracts:
+      # SimpleAccountFactory 合约
+      - name: SimpleAccountFactory
+        address: ${FACTORY_ADDRESS_SEPOLIA} # 从环境变量读取
+        abi_file_path: ./abis/SimpleAccountFactory.json
+        handler: ./src/EventHandlers.ts
+        events:
+          - event: AccountCreated
+            required_entities:
+              - name: SmartAccount
+
+      # SimpleAccount 合约（动态监听所有创建的账户）
+      - name: SimpleAccount
+        abi_file_path: ./abis/SimpleAccount.json
+        handler: ./src/EventHandlers.ts
+        events:
+          - event: SimpleAccountInitialized
+            required_entities:
+              - name: SmartAccount
+
+  # 以太坊主网（可选，暂时注释）
+  # - id: 1
+  #   name: mainnet
+  #   rpc_config:
+  #     url: ${MAINNET_RPC_URL}
+  #   start_block: LATEST
+  #   contracts:
+  #     - name: SimpleAccountFactory
+  #       address: ${FACTORY_ADDRESS_MAINNET}
+  #       abi_file_path: ./abis/SimpleAccountFactory.json
+  #       handler: ./src/EventHandlers.ts
+  #       events:
+  #         - event: AccountCreated
+
+# 实体定义
+# 注意：实际的实体定义在 schema.graphql 中
+
